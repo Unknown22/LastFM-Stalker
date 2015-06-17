@@ -10,6 +10,8 @@
 LastFM strona;
 
 
+
+
 DWORD WINAPI odswiezanie(__in LPVOID lpParameter)
 {
 	while (true)
@@ -157,9 +159,16 @@ namespace LastFMStalker {
 
 		}
 
+		void zmiana_aktualizacji()
+		{
+			String^ data_godzina_aktualizacji_po_konwersji = gcnew String(strona.ostatnia_aktualizacja.c_str());
+			label_aktualizacja->Text = data_godzina_aktualizacji_po_konwersji;
+		}
+
 #pragma endregion
 	private: System::Void MyForm_Load(System::Object^  sender, System::EventArgs^  e) {
 	}
+
 	private: System::Void button_zatwierdzanie_nazwy_uzytkownika_Click(System::Object^  sender, System::EventArgs^  e) {
 
 				 label_pelny_adres_lastfm->Text = "";
@@ -169,7 +178,7 @@ namespace LastFMStalker {
 				 string uzytkownik;
 				 string pelny_adres;
 
-				 HANDLE odswiez, odswiez_aktualizacje;
+				 HANDLE odswiez;
 
 
 
@@ -183,6 +192,8 @@ namespace LastFMStalker {
 				 label_pelny_adres_lastfm->Text = pelny_adres_po_konwersji;
 
 
+
+
 				 string przyrostek = ".txt";
 				 string nazwa_bazy = nazwa_uzytkownika + przyrostek;
 				 transform(nazwa_bazy.begin(), nazwa_bazy.end(), nazwa_bazy.begin(), ::tolower);
@@ -193,5 +204,6 @@ namespace LastFMStalker {
 				 
 				 odswiez = CreateThread(0, 0, odswiezanie, 0, 0, 0);
 	}
+			
 	};
 }
