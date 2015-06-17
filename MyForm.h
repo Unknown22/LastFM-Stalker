@@ -9,7 +9,12 @@
 
 LastFM strona;
 
+delegate void ZmianaLabela();
 
+public ref class Odswiezanie_Daty_Godziny
+{
+	public: static ZmianaLabela^ odswiez_label;
+};
 
 
 DWORD WINAPI odswiezanie(__in LPVOID lpParameter)
@@ -17,6 +22,7 @@ DWORD WINAPI odswiezanie(__in LPVOID lpParameter)
 	while (true)
 	{
 		strona.glowny();
+		Odswiezanie_Daty_Godziny::odswiez_label->Invoke();
 		System::Threading::Thread::Sleep(5000);
 	}
 	return 0;
@@ -159,7 +165,7 @@ namespace LastFMStalker {
 
 		}
 
-		void zmiana_aktualizacji()
+		void odswiez_date_godzine()
 		{
 			String^ data_godzina_aktualizacji_po_konwersji = gcnew String(strona.ostatnia_aktualizacja.c_str());
 			label_aktualizacja->Text = data_godzina_aktualizacji_po_konwersji;
@@ -202,6 +208,7 @@ namespace LastFMStalker {
 
 				 strona.wczytaj_slownik();
 				 
+				 Odswiezanie_Daty_Godziny::odswiez_label = gcnew ZmianaLabela(this,&MyForm::odswiez_date_godzine);
 				 odswiez = CreateThread(0, 0, odswiezanie, 0, 0, 0);
 	}
 			
