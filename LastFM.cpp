@@ -16,13 +16,13 @@ LastFM::LastFM()
 
 }
 
-LastFM::LastFM(string adres, string adres_zrodla, string baza)
+LastFM::LastFM(string adres, string adres_zrodla, string baza, string adres_slownika)
 {
 	adres_ = adres;
 	adres_zrodla_ = adres_zrodla;
 	path = "strona.txt";
 	database = baza;
-	path_slownik = "base_dictionary.txt";
+	path_slownik = adres_slownika;
 }
 
 LastFM::~LastFM()
@@ -252,7 +252,7 @@ bool LastFM::czy_jest_w_bazie()
 {
 	if (baza.count(nazwa_klucza) == 0)
 	{
-		baza[nazwa_klucza] = FALSE;
+		baza[nazwa_klucza] = 0;
 		//cout << nazwa_klucza << endl;
 		return TRUE;
 	}
@@ -282,7 +282,7 @@ void LastFM::wczytaj_slownik()
 	ifstream slownik;
 	string linia1;
 	string linia2;
-	bool status;
+	int status;
 	slownik.open(path_slownik, ios_base::in);
 	if (slownik.good() == true)
 	{
@@ -291,9 +291,11 @@ void LastFM::wczytaj_slownik()
 			getline(slownik, linia1);
 			getline(slownik, linia2);
 			if (linia2 == "0")
-				status = FALSE;
-			else
-				status = TRUE;
+				status = 0;
+			else if (linia2 == "1")
+				status = 1;
+			else if (linia2 == "2")
+				status = 2;
 			baza[linia1] = status;
 			//cout << linia << endl; //wyœwietlenie linii
 		}

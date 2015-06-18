@@ -18,8 +18,6 @@ private:
 	size_t dlugosc_nazwy_zespolu;
 	size_t dlugosc_tytulu;
 
-	map<string, bool> baza;
-
 	char* nazwa_zespolu;
 	char* tytul;
 
@@ -31,10 +29,11 @@ private:
 	bool czy_jest_w_bazie();
 
 public:
+	map<string, int> baza;
 	string path_slownik;
 	string ostatnia_aktualizacja;
 	LastFM();
-	LastFM(string adres, string adres_zrodla, string baza);
+	LastFM(string adres, string adres_zrodla, string baza, string adres_slownika);
 	~LastFM();
 	void odczytaj_zrodlo_strony();
 	void zapisz_zrodlo_do_pliku();
