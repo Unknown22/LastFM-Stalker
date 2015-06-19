@@ -1,4 +1,5 @@
 #pragma once
+
 #include "LastFM.h"
 #include <Windows.h>
 #include <WinInet.h>

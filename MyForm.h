@@ -1,4 +1,5 @@
 #pragma once
+
 #include "LastFM.h"
 #include <msclr\marshal_cppstd.h>
 #include <algorithm>
@@ -27,6 +28,7 @@ DWORD WINAPI odswiezanie(__in LPVOID lpParameter)
 	while (true)
 	{
 		strona.glowny();
+		System::Threading::Thread::Sleep(5000);
 		Odswiezanie_List::odswiez_listy->Invoke();
 		Odswiezanie_Daty_Godziny::odswiez_label->Invoke();
 		System::Threading::Thread::Sleep(180000);
@@ -97,6 +99,9 @@ namespace LastFMStalker {
 	private: System::Windows::Forms::RadioButton^  radio_button_sprawdzone;
 	private: System::Windows::Forms::Label^  label3;
 	private: System::Windows::Forms::TextBox^  textBox_zaznaczone;
+	private: System::Windows::Forms::Button^  button_odswiez_listy;
+	private: System::Windows::Forms::Button^  button_youtube;
+
 
 
 
@@ -117,6 +122,7 @@ namespace LastFMStalker {
 		/// </summary>
 		void InitializeComponent(void)
 		{
+			System::ComponentModel::ComponentResourceManager^  resources = (gcnew System::ComponentModel::ComponentResourceManager(MyForm::typeid));
 			this->label1 = (gcnew System::Windows::Forms::Label());
 			this->nazwa_uzytkownika_textbox = (gcnew System::Windows::Forms::TextBox());
 			this->button_zatwierdzanie_nazwy_uzytkownika = (gcnew System::Windows::Forms::Button());
@@ -135,6 +141,8 @@ namespace LastFMStalker {
 			this->radio_button_sprawdzone = (gcnew System::Windows::Forms::RadioButton());
 			this->label3 = (gcnew System::Windows::Forms::Label());
 			this->textBox_zaznaczone = (gcnew System::Windows::Forms::TextBox());
+			this->button_odswiez_listy = (gcnew System::Windows::Forms::Button());
+			this->button_youtube = (gcnew System::Windows::Forms::Button());
 			this->tabControl1->SuspendLayout();
 			this->tab_nie_pobrane->SuspendLayout();
 			this->tab_pobrane->SuspendLayout();
@@ -187,7 +195,7 @@ namespace LastFMStalker {
 			// label_aktualizacja
 			// 
 			this->label_aktualizacja->AutoSize = true;
-			this->label_aktualizacja->Location = System::Drawing::Point(403, 13);
+			this->label_aktualizacja->Location = System::Drawing::Point(403, 9);
 			this->label_aktualizacja->Name = L"label_aktualizacja";
 			this->label_aktualizacja->Size = System::Drawing::Size(0, 13);
 			this->label_aktualizacja->TabIndex = 5;
@@ -265,7 +273,7 @@ namespace LastFMStalker {
 			// radio_button_nie_pobrane
 			// 
 			this->radio_button_nie_pobrane->AutoSize = true;
-			this->radio_button_nie_pobrane->Location = System::Drawing::Point(296, 189);
+			this->radio_button_nie_pobrane->Location = System::Drawing::Point(300, 157);
 			this->radio_button_nie_pobrane->Name = L"radio_button_nie_pobrane";
 			this->radio_button_nie_pobrane->Size = System::Drawing::Size(83, 17);
 			this->radio_button_nie_pobrane->TabIndex = 7;
@@ -277,7 +285,7 @@ namespace LastFMStalker {
 			// radio_button_pobrane
 			// 
 			this->radio_button_pobrane->AutoSize = true;
-			this->radio_button_pobrane->Location = System::Drawing::Point(296, 212);
+			this->radio_button_pobrane->Location = System::Drawing::Point(300, 180);
 			this->radio_button_pobrane->Name = L"radio_button_pobrane";
 			this->radio_button_pobrane->Size = System::Drawing::Size(65, 17);
 			this->radio_button_pobrane->TabIndex = 8;
@@ -289,7 +297,7 @@ namespace LastFMStalker {
 			// radio_button_sprawdzone
 			// 
 			this->radio_button_sprawdzone->AutoSize = true;
-			this->radio_button_sprawdzone->Location = System::Drawing::Point(296, 234);
+			this->radio_button_sprawdzone->Location = System::Drawing::Point(300, 202);
 			this->radio_button_sprawdzone->Name = L"radio_button_sprawdzone";
 			this->radio_button_sprawdzone->Size = System::Drawing::Size(84, 17);
 			this->radio_button_sprawdzone->TabIndex = 9;
@@ -315,11 +323,33 @@ namespace LastFMStalker {
 			this->textBox_zaznaczone->Size = System::Drawing::Size(272, 20);
 			this->textBox_zaznaczone->TabIndex = 11;
 			// 
+			// button_odswiez_listy
+			// 
+			this->button_odswiez_listy->Location = System::Drawing::Point(300, 223);
+			this->button_odswiez_listy->Name = L"button_odswiez_listy";
+			this->button_odswiez_listy->Size = System::Drawing::Size(75, 23);
+			this->button_odswiez_listy->TabIndex = 12;
+			this->button_odswiez_listy->Text = L"Odœwie¿ listy";
+			this->button_odswiez_listy->UseVisualStyleBackColor = true;
+			this->button_odswiez_listy->Click += gcnew System::EventHandler(this, &MyForm::button_odswiez_listy_Click);
+			// 
+			// button_youtube
+			// 
+			this->button_youtube->Image = (cli::safe_cast<System::Drawing::Image^>(resources->GetObject(L"button_youtube.Image")));
+			this->button_youtube->Location = System::Drawing::Point(467, 157);
+			this->button_youtube->Name = L"button_youtube";
+			this->button_youtube->Size = System::Drawing::Size(105, 45);
+			this->button_youtube->TabIndex = 13;
+			this->button_youtube->UseVisualStyleBackColor = true;
+			this->button_youtube->Click += gcnew System::EventHandler(this, &MyForm::button_youtube_Click);
+			// 
 			// MyForm
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
 			this->ClientSize = System::Drawing::Size(584, 262);
+			this->Controls->Add(this->button_youtube);
+			this->Controls->Add(this->button_odswiez_listy);
 			this->Controls->Add(this->textBox_zaznaczone);
 			this->Controls->Add(this->label3);
 			this->Controls->Add(this->radio_button_sprawdzone);
@@ -354,6 +384,10 @@ namespace LastFMStalker {
 
 		void odswiez_listy()
 		{
+			strona.zapisz_slownik();
+
+			String^ curItem = textBox_zaznaczone->Text;
+
 			listbox_nie_pobrane->Items->Clear();
 			listbox_pobrane->Items->Clear();
 			listbox_sprawdzone->Items->Clear();
@@ -382,6 +416,22 @@ namespace LastFMStalker {
 			listbox_nie_pobrane->EndUpdate();
 			listbox_pobrane->EndUpdate();
 			listbox_sprawdzone->EndUpdate();
+
+			if (listbox_nie_pobrane->Items->Contains(curItem))
+			{
+				int index = listbox_nie_pobrane->Items->IndexOf(curItem);
+				listbox_nie_pobrane->SetSelected(index, TRUE);
+			}
+			else if (listbox_pobrane->Items->Contains(curItem))
+			{
+				int index = listbox_pobrane->Items->IndexOf(curItem);
+				listbox_pobrane->SetSelected(index, TRUE);
+			}
+			else if (listbox_sprawdzone->Items->Contains(curItem))
+			{
+				int index = listbox_sprawdzone->Items->IndexOf(curItem);
+				listbox_sprawdzone->SetSelected(index, TRUE);
+			}
 		}
 
 #pragma endregion
@@ -420,12 +470,14 @@ namespace LastFMStalker {
 
 				 strona = { adres, adres_zrodla, nazwa_bazy, adres_slownika };
 
-				 strona.wczytaj_slownik();
+				 
 
 				 listbox_nie_pobrane->Items->Clear();
 				 listbox_pobrane->Items->Clear();
 				 listbox_sprawdzone->Items->Clear();
 				 
+				 strona.wczytaj_slownik();
+
 				 Odswiezanie_Daty_Godziny::odswiez_label = gcnew ZmianaLabela(this,&MyForm::odswiez_date_godzine);
 				 Odswiezanie_List::odswiez_listy = gcnew odswiezanie_list(this, &MyForm::odswiez_listy);
 				 odswiez = CreateThread(0, 0, odswiezanie, 0, 0, 0);
@@ -435,106 +487,237 @@ namespace LastFMStalker {
 			
 
 private: System::Void listbox_nie_pobrane_SelectedIndexChanged(System::Object^  sender, System::EventArgs^  e) {
-			 radio_button_nie_pobrane->Checked = FALSE;
-			 radio_button_pobrane->Checked = FALSE;
-			 radio_button_sprawdzone->Checked = FALSE;
 
-			 String^ curItem = listbox_nie_pobrane->SelectedItem->ToString();
-			 string sprawdz_radio_button = msclr::interop::marshal_as<std::string>(curItem);
-			 textBox_zaznaczone->Text = curItem;
 
-			 if (strona.baza[sprawdz_radio_button] == 0)
-			 {
-				 radio_button_nie_pobrane->Checked = TRUE;
-				 radio_button_pobrane->Checked = FALSE;
-				 radio_button_sprawdzone->Checked = FALSE;
-			 }
-			 else if (strona.baza[sprawdz_radio_button] == 1)
-			 {
-				 radio_button_nie_pobrane->Checked = FALSE;
-				 radio_button_pobrane->Checked = TRUE;
-				 radio_button_sprawdzone->Checked = FALSE;
-			 }
-			 else if (strona.baza[sprawdz_radio_button] == 2)
+
+			 //------------------------
+			 if (listbox_nie_pobrane->SelectedIndex != -1)
 			 {
 				 radio_button_nie_pobrane->Checked = FALSE;
 				 radio_button_pobrane->Checked = FALSE;
-				 radio_button_sprawdzone->Checked = TRUE;
+				 radio_button_sprawdzone->Checked = FALSE;
+
+				 listbox_pobrane->ClearSelected();
+				 listbox_sprawdzone->ClearSelected();
+
+				 String^ curItem = listbox_nie_pobrane->SelectedItem->ToString();
+				 string sprawdz_radio_button = msclr::interop::marshal_as<std::string>(curItem);
+				 textBox_zaznaczone->Text = curItem;
+
+				 if (strona.baza[sprawdz_radio_button] == 0)
+				 {
+					 radio_button_nie_pobrane->Checked = TRUE;
+					 radio_button_pobrane->Checked = FALSE;
+					 radio_button_sprawdzone->Checked = FALSE;
+				 }
+				 else if (strona.baza[sprawdz_radio_button] == 1)
+				 {
+					 radio_button_nie_pobrane->Checked = FALSE;
+					 radio_button_pobrane->Checked = TRUE;
+					 radio_button_sprawdzone->Checked = FALSE;
+				 }
+				 else if (strona.baza[sprawdz_radio_button] == 2)
+				 {
+					 radio_button_nie_pobrane->Checked = FALSE;
+					 radio_button_pobrane->Checked = FALSE;
+					 radio_button_sprawdzone->Checked = TRUE;
+				 }
 			 }
+
+			 //------------------------
+
+
+			
 
 }
 private: System::Void radio_button_nie_pobrane_CheckedChanged(System::Object^  sender, System::EventArgs^  e) {
 		
-			 //
-			 // DO NAPISANIA EVENT RADIO BUTTON NIE POBRANE
-			 //
+			 if (listbox_nie_pobrane->SelectedIndex != -1)
+			 {
+				 String^ curItem = listbox_nie_pobrane->SelectedItem->ToString();
+				 string sprawdz_radio_button = msclr::interop::marshal_as<std::string>(curItem);
+
+				 if (strona.baza[sprawdz_radio_button] != 0 && radio_button_nie_pobrane->Checked == TRUE)
+				 {
+					 strona.baza[sprawdz_radio_button] = 0;
+				 }
+
+			 }
+			 else if (listbox_pobrane->SelectedIndex != -1)
+			 {
+				 String^ curItem = listbox_pobrane->SelectedItem->ToString();
+				 string sprawdz_radio_button = msclr::interop::marshal_as<std::string>(curItem);
+
+				 if (strona.baza[sprawdz_radio_button] != 0 && radio_button_nie_pobrane->Checked == TRUE)
+				 {
+					 strona.baza[sprawdz_radio_button] = 0;
+				 }
+
+			 }
+			 else if (listbox_sprawdzone->SelectedIndex != -1)
+			 {
+				 String^ curItem = listbox_sprawdzone->SelectedItem->ToString();
+				 string sprawdz_radio_button = msclr::interop::marshal_as<std::string>(curItem);
+
+				 if (strona.baza[sprawdz_radio_button] != 0 && radio_button_nie_pobrane->Checked == TRUE)
+				 {
+					 strona.baza[sprawdz_radio_button] = 0;
+				 }
+
+			 }
 }
 private: System::Void radio_button_pobrane_CheckedChanged(System::Object^  sender, System::EventArgs^  e) {
-			 //
-			 // DO NAPISANIA EVENT RADIO BUTTON POBRANE
-			 //
+
+			 if (listbox_nie_pobrane->SelectedIndex != -1)
+			 {
+				 String^ curItem = listbox_nie_pobrane->SelectedItem->ToString();
+				 string sprawdz_radio_button = msclr::interop::marshal_as<std::string>(curItem);
+
+				 if (strona.baza[sprawdz_radio_button] != 1 && radio_button_pobrane->Checked == TRUE)
+				 {
+					 strona.baza[sprawdz_radio_button] = 1;
+				 }
+
+			 }
+			 else if (listbox_pobrane->SelectedIndex != -1)
+			 {
+				 String^ curItem = listbox_pobrane->SelectedItem->ToString();
+				 string sprawdz_radio_button = msclr::interop::marshal_as<std::string>(curItem);
+
+				 if (strona.baza[sprawdz_radio_button] != 1 && radio_button_pobrane->Checked == TRUE)
+				 {
+					 strona.baza[sprawdz_radio_button] = 1;
+				 }
+
+			 }
+			 else if (listbox_sprawdzone->SelectedIndex != -1)
+			 {
+				 String^ curItem = listbox_sprawdzone->SelectedItem->ToString();
+				 string sprawdz_radio_button = msclr::interop::marshal_as<std::string>(curItem);
+
+				 if (strona.baza[sprawdz_radio_button] != 1 && radio_button_pobrane->Checked == TRUE)
+				 {
+					 strona.baza[sprawdz_radio_button] = 1;
+				 }
+
+			 }
 }
 private: System::Void radio_button_sprawdzone_CheckedChanged(System::Object^  sender, System::EventArgs^  e) {
-			 //
-			 // DO NAPISANIA EVENT RADIO BUTTON SPRAWDZONE
-			 //
+			
+			 if (listbox_nie_pobrane->SelectedIndex != -1)
+			 {
+				 String^ curItem = listbox_nie_pobrane->SelectedItem->ToString();
+				 string sprawdz_radio_button = msclr::interop::marshal_as<std::string>(curItem);
+
+				 if (strona.baza[sprawdz_radio_button] != 2 && radio_button_sprawdzone->Checked == TRUE)
+				 {
+					 strona.baza[sprawdz_radio_button] = 2;
+				 }
+
+			 }
+			 else if (listbox_pobrane->SelectedIndex != -1)
+			 {
+				 String^ curItem = listbox_pobrane->SelectedItem->ToString();
+				 string sprawdz_radio_button = msclr::interop::marshal_as<std::string>(curItem);
+
+				 if (strona.baza[sprawdz_radio_button] != 2 && radio_button_sprawdzone->Checked == TRUE)
+				 {
+					 strona.baza[sprawdz_radio_button] = 2;
+				 }
+
+			 }
+			 else if (listbox_sprawdzone->SelectedIndex != -1)
+			 {
+				 String^ curItem = listbox_sprawdzone->SelectedItem->ToString();
+				 string sprawdz_radio_button = msclr::interop::marshal_as<std::string>(curItem);
+
+				 if (strona.baza[sprawdz_radio_button] != 2 && radio_button_sprawdzone->Checked == TRUE)
+				 {
+					 strona.baza[sprawdz_radio_button] = 2;
+				 }
+
+			 }
 }
 private: System::Void listbox_pobrane_SelectedIndexChanged(System::Object^  sender, System::EventArgs^  e) {
-			 radio_button_nie_pobrane->Checked = FALSE;
-			 radio_button_pobrane->Checked = FALSE;
-			 radio_button_sprawdzone->Checked = FALSE;
 
-
-			 String^ curItem = listbox_pobrane->SelectedItem->ToString();
-			 string sprawdz_radio_button = msclr::interop::marshal_as<std::string>(curItem);
-			 textBox_zaznaczone->Text = curItem;
-
-			 if (strona.baza[sprawdz_radio_button] == 0)
-			 {
-				 radio_button_nie_pobrane->Checked = TRUE;
-				 radio_button_pobrane->Checked = FALSE;
-				 radio_button_sprawdzone->Checked = FALSE;
-			 }
-			 else if (strona.baza[sprawdz_radio_button] == 1)
-			 {
-				 radio_button_nie_pobrane->Checked = FALSE;
-				 radio_button_pobrane->Checked = TRUE;
-				 radio_button_sprawdzone->Checked = FALSE;
-			 }
-			 else if (strona.baza[sprawdz_radio_button] == 2)
+			 if (listbox_pobrane->SelectedIndex != -1)
 			 {
 				 radio_button_nie_pobrane->Checked = FALSE;
 				 radio_button_pobrane->Checked = FALSE;
-				 radio_button_sprawdzone->Checked = TRUE;
+				 radio_button_sprawdzone->Checked = FALSE;
+
+				 listbox_nie_pobrane->ClearSelected();
+				 listbox_sprawdzone->ClearSelected();
+
+				 String^ curItem = listbox_pobrane->SelectedItem->ToString();
+				 string sprawdz_radio_button = msclr::interop::marshal_as<std::string>(curItem);
+				 textBox_zaznaczone->Text = curItem;
+
+				 if (strona.baza[sprawdz_radio_button] == 0)
+				 {
+					 radio_button_nie_pobrane->Checked = TRUE;
+					 radio_button_pobrane->Checked = FALSE;
+					 radio_button_sprawdzone->Checked = FALSE;
+				 }
+				 else if (strona.baza[sprawdz_radio_button] == 1)
+				 {
+					 radio_button_nie_pobrane->Checked = FALSE;
+					 radio_button_pobrane->Checked = TRUE;
+					 radio_button_sprawdzone->Checked = FALSE;
+				 }
+				 else if (strona.baza[sprawdz_radio_button] == 2)
+				 {
+					 radio_button_nie_pobrane->Checked = FALSE;
+					 radio_button_pobrane->Checked = FALSE;
+					 radio_button_sprawdzone->Checked = TRUE;
+				 }
 			 }
 }
 private: System::Void listbox_sprawdzone_SelectedIndexChanged(System::Object^  sender, System::EventArgs^  e) {
-			 radio_button_nie_pobrane->Checked = FALSE;
-			 radio_button_pobrane->Checked = FALSE;
-			 radio_button_sprawdzone->Checked = FALSE;
-
-			 String^ curItem = listbox_sprawdzone->SelectedItem->ToString();
-			 string sprawdz_radio_button = msclr::interop::marshal_as<std::string>(curItem);
-			 textBox_zaznaczone->Text = curItem;
-
-			 if (strona.baza[sprawdz_radio_button] == 0)
-			 {
-				 radio_button_nie_pobrane->Checked = TRUE;
-				 radio_button_pobrane->Checked = FALSE;
-				 radio_button_sprawdzone->Checked = FALSE;
-			 }
-			 else if (strona.baza[sprawdz_radio_button] == 1)
-			 {
-				 radio_button_nie_pobrane->Checked = FALSE;
-				 radio_button_pobrane->Checked = TRUE;
-				 radio_button_sprawdzone->Checked = FALSE;
-			 }
-			 else if (strona.baza[sprawdz_radio_button] == 2)
+			 
+			 if (listbox_sprawdzone->SelectedIndex != -1)
 			 {
 				 radio_button_nie_pobrane->Checked = FALSE;
 				 radio_button_pobrane->Checked = FALSE;
-				 radio_button_sprawdzone->Checked = TRUE;
+				 radio_button_sprawdzone->Checked = FALSE;
+
+				 listbox_nie_pobrane->ClearSelected();
+				 listbox_pobrane->ClearSelected();
+
+				 String^ curItem = listbox_sprawdzone->SelectedItem->ToString();
+				 string sprawdz_radio_button = msclr::interop::marshal_as<std::string>(curItem);
+				 textBox_zaznaczone->Text = curItem;
+
+
+				 if (strona.baza[sprawdz_radio_button] == 0)
+				 {
+					 radio_button_nie_pobrane->Checked = TRUE;
+					 radio_button_pobrane->Checked = FALSE;
+					 radio_button_sprawdzone->Checked = FALSE;
+				 }
+				 else if (strona.baza[sprawdz_radio_button] == 1)
+				 {
+					 radio_button_nie_pobrane->Checked = FALSE;
+					 radio_button_pobrane->Checked = TRUE;
+					 radio_button_sprawdzone->Checked = FALSE;
+				 }
+				 else if (strona.baza[sprawdz_radio_button] == 2)
+				 {
+					 radio_button_nie_pobrane->Checked = FALSE;
+					 radio_button_pobrane->Checked = FALSE;
+					 radio_button_sprawdzone->Checked = TRUE;
+				 }
 			 }
+}
+private: System::Void button_odswiez_listy_Click(System::Object^  sender, System::EventArgs^  e) {
+			 odswiez_listy();
+}
+private: System::Void button_youtube_Click(System::Object^  sender, System::EventArgs^  e) {
+
+			 String^ adres_strony_youtube = "www.youtube.com/results?search_query=";
+			 System::String^ adres = textBox_zaznaczone->Text;
+			 adres_strony_youtube = adres_strony_youtube + adres;
+			 System::Diagnostics::Process::Start(adres_strony_youtube);
 }
 };
 }
