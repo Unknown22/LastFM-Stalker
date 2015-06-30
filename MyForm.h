@@ -27,10 +27,11 @@ DWORD WINAPI odswiezanie(__in LPVOID lpParameter)
 {
 	while (true)
 	{
-		strona.glowny();
-		System::Threading::Thread::Sleep(5000);
-		Odswiezanie_List::odswiez_listy->Invoke();
-		Odswiezanie_Daty_Godziny::odswiez_label->Invoke();
+		if (strona.glowny() == 1)
+		{
+			Odswiezanie_List::odswiez_listy->Invoke();
+			Odswiezanie_Daty_Godziny::odswiez_label->Invoke();
+		}
 		System::Threading::Thread::Sleep(180000);
 	}
 	return 0;
@@ -394,20 +395,25 @@ namespace LastFMStalker {
 			listbox_nie_pobrane->BeginUpdate();
 			listbox_pobrane->BeginUpdate();
 			listbox_sprawdzone->BeginUpdate();
-			for (auto i : strona.baza)
+
+			int liczba_elementow_w_bazie = strona.kolejnosc_wpisywania_do_bazy.size();
+			liczba_elementow_w_bazie--;
+
+			for (liczba_elementow_w_bazie; liczba_elementow_w_bazie >= 0; liczba_elementow_w_bazie--)
 			{
-				String^ element = gcnew String(i.first.c_str());
-				if (i.second == 0)
+
+				String^ element = gcnew String(strona.kolejnosc_wpisywania_do_bazy[liczba_elementow_w_bazie].c_str());
+				if (strona.baza[strona.kolejnosc_wpisywania_do_bazy[liczba_elementow_w_bazie]] == 0)
 				{
 					if (!listbox_nie_pobrane->Items->Contains(element))
 						listbox_nie_pobrane->Items->Add(element);
 				}
-				else if (i.second == 1)
+				else if (strona.baza[strona.kolejnosc_wpisywania_do_bazy[liczba_elementow_w_bazie]] == 1)
 				{
 					if (!listbox_pobrane->Items->Contains(element))
 						listbox_pobrane->Items->Add(element);
 				}
-				else if (i.second == 2)
+				else if (strona.baza[strona.kolejnosc_wpisywania_do_bazy[liczba_elementow_w_bazie]] == 2)
 				{
 					if (!listbox_sprawdzone->Items->Contains(element))
 						listbox_sprawdzone->Items->Add(element);
@@ -715,7 +721,7 @@ private: System::Void button_odswiez_listy_Click(System::Object^  sender, System
 private: System::Void button_youtube_Click(System::Object^  sender, System::EventArgs^  e) {
 
 			 String^ adres_strony_youtube = "www.youtube.com/results?search_query=";
-			 System::String^ adres = textBox_zaznaczone->Text;
+			 String^ adres = textBox_zaznaczone->Text;
 			 adres_strony_youtube = adres_strony_youtube + adres;
 			 System::Diagnostics::Process::Start(adres_strony_youtube);
 }

@@ -14,7 +14,7 @@ using namespace System::Threading;
 
 LastFM::LastFM()
 {
-
+	index = 0;
 }
 
 LastFM::LastFM(string adres, string adres_zrodla, string baza, string adres_slownika)
@@ -82,6 +82,7 @@ void LastFM::zapisz_zrodlo_do_pliku()
 
 void LastFM::szukaj_piosenek()
 {
+	liczba_znalezionych_nowych_piosenek = 0;
 	string szukanaFraza = "<td class=\"subjectCell \">";
 	string szukanaFrazaObecnieSluchane = "<td class=\"subjectCell highlight\">";
 	string fraza_przed_nazwa_zespolu = "\">";
@@ -99,14 +100,14 @@ void LastFM::szukaj_piosenek()
 		pozycja_za_wykonawca = znajdz_wykonawce(znalezionaPozycja + fraza_przed_nazwa_zespolu.size());
 		znalezionaPozycja = zrodlo_strony_cale.find(fraza_przed_tytulem, pozycja_za_wykonawca);
 		znalezionaPozycja = znajdz_tytul(znalezionaPozycja + fraza_przed_tytulem.size());
+		liczba_znalezionych_nowych_piosenek++;
 
-
-		if (czy_jest_w_bazie())
-		{
-			zapisz_wykonawce();
-			zapisz_tytul();
-		}
-		nazwa_klucza.clear();
+		//if (czy_jest_w_bazie())
+		//{
+		//	zapisz_element();
+		//	//zapisz_tytul();
+		//}
+		//nazwa_klucza.clear();
 
 
 		//std::cout << "Fraza zostala odnaleziona na pozycji " << znalezionaPozycja << std::endl;
@@ -132,19 +133,29 @@ void LastFM::szukaj_piosenek()
 		pozycja_za_wykonawca = znajdz_wykonawce(znalezionaPozycja + fraza_przed_nazwa_zespolu.size());
 		znalezionaPozycja = zrodlo_strony_cale.find(fraza_przed_tytulem, pozycja_za_wykonawca);
 		znalezionaPozycja = znajdz_tytul(znalezionaPozycja + fraza_przed_tytulem.size());
+		liczba_znalezionych_nowych_piosenek++;
 
-		if (czy_jest_w_bazie())
-		{
-			zapisz_wykonawce();
-			zapisz_tytul();
-		}
-		nazwa_klucza.clear();
+		//if (czy_jest_w_bazie())
+		//{
+		//	zapisz_element();
+		//	//zapisz_tytul();
+		//}
+		//nazwa_klucza.clear();
 
 
 		//std::cout << "Fraza zostala odnaleziona na pozycji " << znalezionaPozycja << std::endl;
 		znalezionaPozycja = zrodlo_strony_cale.find(szukanaFraza, znalezionaPozycja + szukanaFraza.size());
 	} while (znalezionaPozycja != std::string::npos);
 	//---KONIEC szukania ostatnio sluchanych
+	liczba_znalezionych_nowych_piosenek--;
+	for (liczba_znalezionych_nowych_piosenek; liczba_znalezionych_nowych_piosenek >= 0; liczba_znalezionych_nowych_piosenek--)
+	{
+		if (czy_jest_w_bazie(liczba_znalezionych_nowych_piosenek))
+		{
+			zapisz_element(liczba_znalezionych_nowych_piosenek);
+		}
+		nazwa_klucza[liczba_znalezionych_nowych_piosenek].clear();
+	}
 
 	zrodlo_strony_cale.clear();
 }
@@ -166,16 +177,16 @@ size_t LastFM::znajdz_wykonawce(size_t pozycja)
 	while (zrodlo_strony_cale[pozycja] != '<')
 	{
 		nazwa_zespolu[i] = zrodlo_strony_cale[pozycja];
-		nazwa_klucza = nazwa_klucza + nazwa_zespolu[i];
+		nazwa_klucza[liczba_znalezionych_nowych_piosenek] = nazwa_klucza[liczba_znalezionych_nowych_piosenek] + nazwa_zespolu[i];
 		i++;
 		pozycja++;
 	}
 	return pozycja;
 }
 
-void LastFM::zapisz_wykonawce()
+void LastFM::zapisz_element(int indeks)
 {
-	int j = 0;
+	//int j = 0;
 	/*
 	while (j < dlugosc_nazwy_zespolu)
 	{
@@ -184,16 +195,19 @@ void LastFM::zapisz_wykonawce()
 	}
 	cout << " - ";
 	*/
+
 	ofstream fout;
 	fout.open(database, ios_base::out | ios_base::app);
-
+	
+	/*
 	j = 0;
 	while (j < dlugosc_nazwy_zespolu)
-	{
-		fout << nazwa_zespolu[j];
-		j++;
-	}
-	fout << " - ";
+	{*/
+	fout << nazwa_klucza[indeks];
+	fout << endl;
+	//j++;
+	//}
+	//fout << " - ";
 
 }
 
@@ -211,13 +225,13 @@ size_t LastFM::znajdz_tytul(size_t pozycja)
 
 	tytul = new char[dlugosc_tytulu];
 	string separator = " - ";
-	nazwa_klucza = nazwa_klucza + separator;
+	nazwa_klucza[liczba_znalezionych_nowych_piosenek] = nazwa_klucza[liczba_znalezionych_nowych_piosenek] + separator;
 
 	int i = 0;
 	while (zrodlo_strony_cale[pozycja] != '<')
 	{
 		tytul[i] = zrodlo_strony_cale[pozycja];
-		nazwa_klucza = nazwa_klucza + tytul[i];
+		nazwa_klucza[liczba_znalezionych_nowych_piosenek] = nazwa_klucza[liczba_znalezionych_nowych_piosenek] + tytul[i];
 		i++;
 		pozycja++;
 	}
@@ -225,35 +239,36 @@ size_t LastFM::znajdz_tytul(size_t pozycja)
 	return pozycja;
 }
 
-void LastFM::zapisz_tytul()
+//void LastFM::zapisz_tytul()
+//{
+//
+//	//int j = 0;
+//	/*
+//	while (j < dlugosc_tytulu)
+//	{
+//	cout << tytul[j];
+//	j++;
+//	}
+//	cout << endl;
+//	*/
+//	ofstream fout;
+//	fout.open(database, ios_base::out | ios_base::app);
+//
+//	//while (j < dlugosc_tytulu)
+//	//{
+//	fout << baza[nazwa_klucza];
+//		//j++;
+//	//}
+//	fout << endl;
+//
+//}
+
+bool LastFM::czy_jest_w_bazie(int indeks_piosenki)
 {
-
-	int j = 0;
-	/*
-	while (j < dlugosc_tytulu)
+	if (baza.count(nazwa_klucza[indeks_piosenki]) == 0)
 	{
-	cout << tytul[j];
-	j++;
-	}
-	cout << endl;
-	*/
-	ofstream fout;
-	fout.open(database, ios_base::out | ios_base::app);
-
-	while (j < dlugosc_tytulu)
-	{
-		fout << tytul[j];
-		j++;
-	}
-	fout << endl;
-
-}
-
-bool LastFM::czy_jest_w_bazie()
-{
-	if (baza.count(nazwa_klucza) == 0)
-	{
-		baza[nazwa_klucza] = 0;
+		baza[nazwa_klucza[indeks_piosenki]] = 0;
+		kolejnosc_wpisywania_do_bazy[index++] = nazwa_klucza[indeks_piosenki];
 		//cout << nazwa_klucza << endl;
 		return TRUE;
 	}
@@ -266,16 +281,17 @@ void LastFM::zapisz_slownik()
 	ofstream fout;
 	fout.open(path_slownik, ios_base::out | ios_base::trunc);
 	int licznik = 0;
-	for (auto i : baza)
+	for (auto i : kolejnosc_wpisywania_do_bazy)
 	{
-		fout << i.first << endl
-			<< i.second;
+		fout << i.second << endl
+			<< baza[i.second];
 		licznik++;
 		if (licznik < baza.size())
 		{
 			fout << endl;
 		}
 	}
+	fout.close();
 }
 
 void LastFM::wczytaj_slownik()
@@ -284,6 +300,7 @@ void LastFM::wczytaj_slownik()
 	string linia1;
 	string linia2;
 	int status;
+	index = 0;
 	slownik.open(path_slownik, ios_base::in);
 	if (slownik.good() == true)
 	{
@@ -298,6 +315,7 @@ void LastFM::wczytaj_slownik()
 			else if (linia2 == "2")
 				status = 2;
 			baza[linia1] = status;
+			kolejnosc_wpisywania_do_bazy[index++] = linia1;
 			//cout << linia << endl; //wyœwietlenie linii
 		}
 	}
@@ -308,11 +326,14 @@ void LastFM::wczytaj_slownik()
 	slownik.close();
 }
 
-void LastFM::glowny()
+int LastFM::glowny()
 {
+	status_aktualizacji = 0;
 	odczytaj_zrodlo_strony();
 	//zapisz_zrodlo_do_pliku();
 	szukaj_piosenek();
 	zapisz_slownik();
-	Thread::Sleep(5000);
+	status_aktualizacji = 1;
+	return status_aktualizacji;
+	//Thread::Sleep(5000);
 }

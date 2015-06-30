@@ -14,7 +14,10 @@ private:
 	string zrodlo_strony_cale;
 	string path;
 	string database;
-	string nazwa_klucza;
+	string nazwa_klucza [10];
+	string klucz_do_przetworzenia;
+
+	int liczba_znalezionych_nowych_piosenek;
 
 	size_t dlugosc_nazwy_zespolu;
 	size_t dlugosc_tytulu;
@@ -25,12 +28,15 @@ private:
 	//metody
 	size_t znajdz_wykonawce(size_t pozycja);
 	size_t znajdz_tytul(size_t pozycja);
-	void zapisz_wykonawce();
-	void zapisz_tytul();
-	bool czy_jest_w_bazie();
+	void zapisz_element(int indeks);
+	//void zapisz_tytul();
+	bool czy_jest_w_bazie(int indeks_piosenki);
+	int status_aktualizacji;
 
 public:
+	int index;
 	map<string, int> baza;
+	map<int, string> kolejnosc_wpisywania_do_bazy;
 	string path_slownik;
 	string ostatnia_aktualizacja;
 	LastFM();
@@ -41,6 +47,6 @@ public:
 	void szukaj_piosenek();
 	void zapisz_slownik();
 	void wczytaj_slownik();
-	void glowny();
+	int glowny();
 };
 
