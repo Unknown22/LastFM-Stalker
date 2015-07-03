@@ -35,6 +35,7 @@ private:
 
 public:
 	int index;
+	int status_online;
 	map<string, int> baza;
 	map<int, string> kolejnosc_wpisywania_do_bazy;
 	string path_slownik;

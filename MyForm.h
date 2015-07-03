@@ -23,6 +23,12 @@ public ref class Odswiezanie_List
 public: static odswiezanie_list^ odswiez_listy;
 };
 
+delegate void odswiezanie_statusu_online();
+public ref class Odswiezanie_Statusu_Online
+{
+public: static odswiezanie_statusu_online^ odswiez_status_online;
+};
+
 DWORD WINAPI odswiezanie(__in LPVOID lpParameter)
 {
 	while (true)
@@ -30,6 +36,7 @@ DWORD WINAPI odswiezanie(__in LPVOID lpParameter)
 		if (strona.glowny() == 1)
 		{
 			Odswiezanie_List::odswiez_listy->Invoke();
+			//Odswiezanie_Statusu_Online::odswiez_status_online->Invoke();
 			Odswiezanie_Daty_Godziny::odswiez_label->Invoke();
 		}
 		System::Threading::Thread::Sleep(180000);
@@ -102,6 +109,8 @@ namespace LastFMStalker {
 	private: System::Windows::Forms::TextBox^  textBox_zaznaczone;
 	private: System::Windows::Forms::Button^  button_odswiez_listy;
 	private: System::Windows::Forms::Button^  button_youtube;
+	private: System::Windows::Forms::Label^  label_online_offline;
+
 
 
 
@@ -144,6 +153,7 @@ namespace LastFMStalker {
 			this->textBox_zaznaczone = (gcnew System::Windows::Forms::TextBox());
 			this->button_odswiez_listy = (gcnew System::Windows::Forms::Button());
 			this->button_youtube = (gcnew System::Windows::Forms::Button());
+			this->label_online_offline = (gcnew System::Windows::Forms::Label());
 			this->tabControl1->SuspendLayout();
 			this->tab_nie_pobrane->SuspendLayout();
 			this->tab_pobrane->SuspendLayout();
@@ -344,11 +354,24 @@ namespace LastFMStalker {
 			this->button_youtube->UseVisualStyleBackColor = true;
 			this->button_youtube->Click += gcnew System::EventHandler(this, &MyForm::button_youtube_Click);
 			// 
+			// label_online_offline
+			// 
+			this->label_online_offline->AutoSize = true;
+			this->label_online_offline->BackColor = System::Drawing::SystemColors::Control;
+			this->label_online_offline->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8.25F, System::Drawing::FontStyle::Bold,
+				System::Drawing::GraphicsUnit::Point, static_cast<System::Byte>(238)));
+			this->label_online_offline->ForeColor = System::Drawing::SystemColors::ControlText;
+			this->label_online_offline->Location = System::Drawing::Point(16, 69);
+			this->label_online_offline->Name = L"label_online_offline";
+			this->label_online_offline->Size = System::Drawing::Size(0, 13);
+			this->label_online_offline->TabIndex = 14;
+			// 
 			// MyForm
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
 			this->ClientSize = System::Drawing::Size(584, 262);
+			this->Controls->Add(this->label_online_offline);
 			this->Controls->Add(this->button_youtube);
 			this->Controls->Add(this->button_odswiez_listy);
 			this->Controls->Add(this->textBox_zaznaczone);
@@ -377,10 +400,34 @@ namespace LastFMStalker {
 
 		}
 
+		void odswiez_status_online()
+		{
+			String^ data_godzina_aktualizacji_po_konwersji = gcnew String(strona.ostatnia_aktualizacja.c_str());
+			if (strona.status_online == 1)
+			{
+				label_online_offline->Text = data_godzina_aktualizacji_po_konwersji;
+			}
+			else
+			{
+				label_online_offline->Text = data_godzina_aktualizacji_po_konwersji;
+			}
+		}
+
 		void odswiez_date_godzine()
 		{
 			String^ data_godzina_aktualizacji_po_konwersji = gcnew String(strona.ostatnia_aktualizacja.c_str());
 			label_aktualizacja->Text = data_godzina_aktualizacji_po_konwersji;
+			
+			if (strona.status_online == 1)
+			{
+				label_online_offline->Text = "ONLINE";
+				label_online_offline->ForeColor = System::Drawing::Color::Green;
+			}
+			else
+			{
+				label_online_offline->Text = "OFFLINE";
+				label_online_offline->ForeColor = System::Drawing::Color::Red;
+			}
 		}
 
 		void odswiez_listy()

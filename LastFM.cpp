@@ -94,6 +94,7 @@ void LastFM::szukaj_piosenek()
 	znalezionaPozycja = zrodlo_strony_cale.find(szukanaFrazaObecnieSluchane);
 	if (znalezionaPozycja != std::string::npos)
 	{
+		status_online = 1;
 		znalezionaPozycja = zrodlo_strony_cale.find(fraza_przed_nazwa_zespolu, znalezionaPozycja + szukanaFrazaObecnieSluchane.size());
 
 		//przekazywanie do funkcji pozycji od ktorej zaczyna sie nazwa zespolu
@@ -112,6 +113,10 @@ void LastFM::szukaj_piosenek()
 
 		//std::cout << "Fraza zostala odnaleziona na pozycji " << znalezionaPozycja << std::endl;
 		znalezionaPozycja = zrodlo_strony_cale.find(szukanaFraza, znalezionaPozycja + szukanaFraza.size());
+	}
+	else
+	{
+		status_online = 0;
 	}
 
 	//--KONIEC szukania obecnie odtwarzanego
